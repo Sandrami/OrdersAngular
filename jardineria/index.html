@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jardineria JDA</title>
+	<meta name="viewport"  charset=UTF-8 content="width=device-width, initial-scale=1">
+	<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+<body ng-app="App" ng-controller="ctrl">
+	<div class="container">
+		<div class="page-header">
+			<h1>Gestión de pedidos</h1>
+		</div>
+		<div class="row" id="data-client">
+			<div class="col-md-9">
+				<h4>Datos del Cliente</h4>
+			</div>
+			<div class="col-md-3">
+				<form class="navbar-form" role="search">
+	    			<div class="input-group">
+	        			<div class="input-group-btn">
+	
+							<button id="search" type="button" class="btn btn-primary" data-toggle="modal" 
+							data-target=".modal-clients">
+								<i class="glyphicon glyphicon-search"></i>Buscar
+							</button>
+            
+	        			</div>
+			        </div>
+			    </form>
+			</div>
+			<div class="col-md-6">
+				<p>Nombre Cliente: {{selectedClient.NombreCliente || "N/A"}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>Ciudad: {{selectedClient.Ciudad || "N/A"}}</p>
+			</div>
+			<div class="col-md-6">
+				<p>Nombre Contacto: {{selectedClient.NombreContacto || "N/A"}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>Región: {{selectedClient.Region || "N/A"}}</p>
+			</div>
+
+			<div class="col-md-6">
+				<p>FAX: {{selectedClient.Fax || "N/A"}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>País: {{selectedClient.Pais || "N/A"}}</p>
+			</div>
+
+			<div class="col-md-6 ">
+			</div>
+			<div class="col-md-3 ">
+				<p>Limite: {{selectedClient.LimiteCredito || "N/A"}}</p>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row" id="data-client">
+			<div class="col-md-9">
+				<h4>Detalle Pedido</h4>
+			</div>
+			<div class="col-md-3">
+	            <button class="btn btn-default" id="searchProducts" type="submit"  data-toggle="modal" data-target=".modal-products">
+	            	<i class="glyphicon glyphicon-plus">Añadir linea</i>
+	            </button>
+			</div>
+		  <table class="table table-striped">
+		    <thead>
+		      <tr>
+		        <th>Linea</th>
+		        <th>Producto</th>
+		        <th>Proveedor</th>
+		        <th>Stock</th>
+		        <th>Precio Venta</th>
+		        <th>Precio Proveedor</th>
+		        <th>Cantidad</th>
+		        <th>Precio</th>
+		        <th></th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr ng-repeat="product in selectedProducts">
+		        <td> {{$index + 1 }}</td>
+		        <td> {{product.Nombre || "N/A"}}</td>
+		        <td> {{product.Proveedor || "N/A"}}</td>
+		        <td> {{product.CantidadEnStock || "N/A"}}</td>
+		        <td> {{product.PrecioVenta || "N/A"}}</td>
+		        <td> {{product.PrecioProveedor || "N/A"}}</td>
+		        <td>
+		        	<input type="number" name="cantidad" ng-model="product.Cantidad" value="1" min="0" step="1"
+		        	  class="form-control currency"/>
+		        </td>
+		        <td>
+		        	<input type="number" name="precio" ng-model="product.Precio" max="{{product.PrecioVenta * product.Cantidad}}" min="{{product.PrecioProveedor * product.Cantidad}}" step="0.01"
+		        	  data-number-stepfactor="100" class="form-control currency"/>
+		        </td>
+		        <td>
+		        	<button ng-click="deleteProduct($index)"class="btn btn-default" type="submit">
+		        		<i class="glyphicon glyphicon-trash"></i>
+		        	</button>
+		        </td>
+		      </tr>
+		    </tbody>
+		  </table>
+		</div>
+	</div>
+	<div class="container" id="data-client">
+		<div class="row" >
+			<div class="col-md-9">
+				<h4>Finalizar</h4>
+			</div>
+			<div class="col-md-6">
+				<p>Fecha estimada:</p>
+				<div class="input-group date col-md-4" data-provide="datepicker">
+				    <div class="input-group-addon">
+						<i class="glyphicon glyphicon-calendar"></i>
+						<input type="date"/>
+				    </div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+					<br><br>
+				<p>Importe total: {{}}</p>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-6">
+				<p>Observaciones </p><textarea class="form-control" rows="4"></textarea>
+			</div>
+
+			<br><br>
+			<div class="col-md-6">
+				<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-floppy-save"> Aceptar</i></button>
+			</div>
+			<br><br>
+			<div class="col-md-6">
+				<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-ban-circle"> Cancelar</i></button>
+			</div>
+		</div>
+	</div>
+
+
+		<!-- Modal Clients -->
+		<div class="modal fade modal-clients" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+			    <div class="modal-header">
+	          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		          	<h3 class="modal-title">Clientes</h3>
+		        </div>
+		        <div class="modal-body">
+			        <div class="input-group">
+					  	<span class="input-group-addon" id="sizing-addon2"><i class="glyphicon glyphicon-search"></i></span>
+					  	<input id="searching-clients" type="text" class="form-control" placeholder="Indica el nombre del cliente o la ciudad" aria-describedby="sizing-addon1" autocomplete="off" />
+					</div>
+					<button type="button" class="btn btn-primary" ng-click="searchClients()">Buscar</button>
+
+					<div id="searchResults">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Nombre</th>
+									<th>Contacto</th>
+									<th>Ciudad</th>
+									<th>Región</th>
+									<th>País</th>
+								</tr>
+							</thead>
+							<tbody>
+							  	<tr class="search-row" ng-repeat="client in clients" ng-click="selectClient(client)">
+							  		<td>{{client.NombreCliente}}</td>
+							  		<td>{{client.NombreContacto}}</td>
+							  		<td>{{client.Ciudad}}</td>
+							  		<td>{{client.Region}}</td>
+							  		<td>{{client.Pais}}</td>
+							  	</tr>
+							</tbody>
+						</table>
+					</div>
+		        </div>
+		    </div>
+		  </div>
+		</div>
+	</div> <!-- end container base -->
+
+		<!-- Modal Products -->
+		<div class="modal fade modal-products" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+			    <div class="modal-header">
+	          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		          	<h3 class="modal-title">Productos</h3>
+		        </div>
+		        <div class="modal-body">
+			        <div class="input-group">
+					  	<span class="input-group-addon" id="sizing-addon2"><i class="glyphicon glyphicon-search"></i></span>
+					  	<input id="searching-products" type="text" class="form-control" placeholder="Buscar productos..." aria-describedby="sizing-addon1" autocomplete="off" />
+					</div>
+					<button type="button" class="btn btn-primary" ng-click="searchProducts()">Buscar</button>
+
+					<div id="searchResults">
+						<table class="table table-striped">
+							<thead>
+								<tr>									
+									<th>Producto</th>
+									<th>Proveedor</th>
+									<th>Stock</th>
+									<th>Precio de venta</th>
+									<th>Precio proveedor</th>
+
+								</tr>
+							</thead>
+							<tbody>
+							  	<tr class="search-row" ng-repeat="product in products" ng-click="selectProduct(product)">							  		
+							  		<td>{{product.Nombre}}</td>
+							  		<td>{{product.Proveedor}}</td>
+							  		<td>{{product.CantidadEnStock}}</td>
+							  		<td>{{product.PrecioVenta}}</td>
+							  		<td>{{product.PrecioProveedor}}</td>
+							  	</tr>
+							</tbody>
+						</table>
+					</div>
+		        </div>
+		    </div>
+		  </div>
+		</div>
+		
+
+	<!-- scripts at the end of the page because of syncronous loading speed bottleneck -->
+	<script src="js/jquery-2.2.3.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
+	<script src="js/functions.js"></script>
+</body>
+</html>

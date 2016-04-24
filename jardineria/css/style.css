@@ -1,0 +1,22 @@
+body{
+	background-color: rgba(0, 128, 0, 0.19);
+}
+#data-client{
+    border: 1px solid #CAB9B9;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #F1EFEF;
+    margin-bottom: 20px;
+}
+input#c2 {
+    width: 75px;
+}
+
+tr.search-row:hover,
+tr.search-row:hover:nth-child(odd)>td, 
+tr.search-row:hover:nth-child(odd)>th {
+	background-color: #cdc9c9;
+	cursor: pointer;
+}
